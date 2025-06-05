@@ -1,100 +1,22 @@
 <html>
-   <script type='text/javascript'>
-        var inactivityTimer;
-        var preChatTimer; // Timer for pre-chat inactivity
-        const INACTIVITY_TIMEOUT_MS = 2 * 1000; // 2 seconds for testing
-        const PRECHAT_INACTIVITY_TIMEOUT_MS = 2 * 1000; // 2 seconds for pre-chat testing
+  <script type='text/javascript'>
+function initEmbeddedMessaging() {
+try {
+embeddedservice_bootstrap.settings.language = 'en_US'; // For example, enter 'en' or 'en-US'
 
-        function resetInactivityTimer() {
-            console.log('User activity detected, resetting inactivity timer.');
-            clearTimeout(inactivityTimer);
-            inactivityTimer = setTimeout(handleInactivity, INACTIVITY_TIMEOUT_MS);
-        }
-
-        function handleInactivity() {
-            console.log('User has been inactive for ' + (INACTIVITY_TIMEOUT_MS / 1000) + ' seconds.');
-            alert('Your chat session has timed out due to ' + (INACTIVITY_TIMEOUT_MS / 1000) + ' seconds of inactivity.');
-
-            if (window.embeddedservice_bootstrap && window.embeddedservice_bootstrap.userVerificationAPI) {
-                try {
-                    console.log('Attempting to clear session via userVerificationAPI.clearSession()');
-                    window.embeddedservice_bootstrap.userVerificationAPI.clearSession();
-                } catch (err) {
-                    console.error('Error trying to clear session: ', err);
-                }
-            }
-        }
-
-        function startPreChatInactivityTimer() {
-            console.log('Pre-chat form loaded, starting pre-chat inactivity timer (' + (PRECHAT_INACTIVITY_TIMEOUT_MS / 1000) + 's).');
-            clearTimeout(preChatTimer);
-            preChatTimer = setTimeout(handlePreChatInactivity, PRECHAT_INACTIVITY_TIMEOUT_MS);
-        }
-
-        function handlePreChatInactivity() {
-            console.log('User inactive on pre-chat form for ' + (PRECHAT_INACTIVITY_TIMEOUT_MS / 1000) + ' seconds.');
-            alert('You have been inactive on the pre-chat form for ' + (PRECHAT_INACTIVITY_TIMEOUT_MS / 1000) + ' seconds. Please start over if you wish to chat.');
-        }
-
-        function clearPreChatInactivityTimer() {
-            console.log('Clearing pre-chat inactivity timer.');
-            clearTimeout(preChatTimer);
-        }
-
-        function initEmbeddedMessaging() {
-            try {
-                embeddedservice_bootstrap.settings.language = 'en_US';
-
-                document.addEventListener('onEmbeddedMessagingReady', function () {
-                    console.log('Embedded Messaging is ready. Starting session inactivity timer.');
-                    resetInactivityTimer();
-                });
-
-                document.addEventListener('onEmbeddedMessageSent', function(event) {
-                    console.log('Message sent by user. Resetting inactivity timer.');
-                    resetInactivityTimer();
-                    clearPreChatInactivityTimer();
-                });
-
-                document.addEventListener('onEmbeddedMessagingPreChatLoaded', function() {
-                    console.log('Pre-chat loaded. Starting pre-chat inactivity timer.');
-                    startPreChatInactivityTimer();
-                });
-
-                document.addEventListener('onEmbeddedMessagingPreChatSubmitted', function() {
-                    console.log('Pre-chat submitted. Clearing pre-chat timer, session timer should be active/reset.');
-                    clearPreChatInactivityTimer();
-                    resetInactivityTimer();
-                });
-
-                embeddedservice_bootstrap.init(
-                    '00DWr000005QPQB', // Org ID
-                    'MIAW_Embedded_Test', // Deployment Name
-                    'https://efx4biz--miawdev.sandbox.my.site.com/ESWMIAWEmbeddedTest1748436453296', // Site URL
-                    {
-                        scrt2URL: 'https://efx4biz--miawdev.sandbox.my.salesforce-scrt.com' // SCRT URL
-                    }
-                );
-
-                // General activity listeners
-                document.addEventListener('mousemove', resetInactivityTimer);
-                document.addEventListener('keypress', resetInactivityTimer);
-
-                // It might be better to only reset pre-chat timer on specific pre-chat field interactions
-                // rather than any mouse move on the page if pre-chat is active.
-                // For simplicity now, global listeners affect the main timer.
-                // If pre-chat is active, its own timer `preChatTimer` is the one to watch.
-                // `resetInactivityTimer` will reset the main session timer.
-
-            } catch (err) {
-                console.error('Error loading Embedded Messaging: ', err);
-            }
-        }
-    </script>
-    <script type='text/javascript' src='https://efx4biz--miawdev.sandbox.my.site.com/ESWMIAWEmbeddedTest1748436453296/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
-
-    <h1>My Page with MIAW Chat</h1>
-    <p>Chat will attempt to timeout after 2 seconds of inactivity (for testing).</p>
-
+embeddedservice_bootstrap.init(
+'00DWr000005QPQB',
+'MIAW_Embedded_Test',
+'https://efx4biz--miawdev.sandbox.my.site.com/ESWMIAWEmbeddedTest1748436453296',
+{
+scrt2URL: 'https://efx4biz--miawdev.sandbox.my.salesforce-scrt.com'
+}
+);
+} catch (err) {
+console.error('Error loading Embedded Messaging: ', err);
+}
+};
+</script>
+<script type='text/javascript' src='https://efx4biz--miawdev.sandbox.my.site.com/ESWMIAWEmbeddedTest1748436453296/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
   
 </html>
